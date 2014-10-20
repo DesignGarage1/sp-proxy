@@ -1,0 +1,19 @@
+{
+  "name": "sp-proxy",
+  "version": "0.0.0",
+  "description": "Proxy for S3 upload and get image",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kiennt",
+  "license": "ISC",
+  "dependencies": {
+    "batch": "^0.5.1",
+    "express": "^4.9.7",
+    "knox": "^0.9.1",
+    "multiparty": "^3.3.2",
+    "node-uuid": "^1.4.1",
+    "request": "^2.45.0"
+  }
+}
