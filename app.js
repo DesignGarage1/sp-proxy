@@ -35,7 +35,7 @@ app.listen(process.env.PORT || 3000);
 
 // heroku hack
 var request = require('request');
-var DELAY_TIME = 6000; // 10 minutes
+var DELAY_TIME = 10 * 60 * 1000; // 10 minutes
 function request_itself() {
   if (config.CURRENT_DOMAIN != undefined) {
     var url = 'http://' + config.CURRENT_DOMAIN;
