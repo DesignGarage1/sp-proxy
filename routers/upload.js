@@ -2,6 +2,7 @@ var uuid = require('node-uuid'),
     multiparty = require('multiparty'),
     knox = require('knox'),
     Batch = require('batch'),
+    request = require('request'),
     config = require('../config');
 
 
@@ -38,6 +39,13 @@ module.exports = function(req, res, next) {
       batch = new Batch();
 
   batch.push(function(cb) {
+    form.on('field', function(name, value) {
+      console.log(name + ' ' +  value);
+      cb(null, value);
+    });
+  });
+
+  batch.push(function(cb) {
     form.on('part', function(part) {
       if (! part.filename) return;
       cb(null, part);
@@ -46,9 +54,17 @@ module.exports = function(req, res, next) {
 
   batch.end(function(err, results) {
     if (err) return next(err);
-    uploadToS3(results[0], function(err, data) {
+    uploadToS3(results[1], function(err, data) {
       if (err) return next(err);
-      try { res.json(data); } catch(e) {}
+      var url = 'http://' + config.SIMPLEPRINT_DOMAIN + '/labs/code/' + results[0] + '/images/';
+      request.post({
+        url: url,
+        formData: {
+          original_url: data.url
+        }
+      }, function(err, response, body) {
+        res.json(JSON.parse(body));
+      });
     })
   });
 

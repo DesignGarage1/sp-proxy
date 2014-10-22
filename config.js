@@ -3,6 +3,7 @@ module.exports = {
   AWS_KEY: process.env.AWS_KEY,
   AWS_SECRET: process.env.AWS_SECRET,
   DOMAIN: process.env.DOMAIN,
+  SIMPLEPRINT_DOMAIN: process.env.SIMPLEPRINT_DOMAIN || 'stage.getsimpleprints.com',
   PROXIES: [
     'http://sp-thumbor-0.herokuapp.com',
     'http://sp-thumbor-1.herokuapp.com',
