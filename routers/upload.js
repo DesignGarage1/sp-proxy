@@ -36,11 +36,19 @@ function uploadToS3(fileStream, next) {
 
 module.exports = function(req, res, next) {
   var form = new multiparty.Form(),
-      batch = new Batch();
+      batch = new Batch(),
+      friend_id = '',
+      code = '';
 
   batch.push(function(cb) {
     form.on('field', function(name, value) {
       console.log(name + ' ' +  value);
+      if (name == 'code') {
+        code = value;
+      }
+      else if (name == 'friend_id') {
+        friend_id = value;
+      }
       cb(null, value);
     });
   });
@@ -56,16 +64,17 @@ module.exports = function(req, res, next) {
     if (err) return next(err);
     uploadToS3(results[1], function(err, data) {
       if (err) return next(err);
-      var url = 'http://' + config.SIMPLEPRINT_DOMAIN + '/labs/code/' + results[0] + '/images/';
+      var url = 'http://' + config.SIMPLEPRINT_DOMAIN + '/labs/code/' + code + '/images/';
       request.post({
         url: url,
         formData: {
-          original_url: data.url
+          'original_url': data.url,
+          'friend_id': friend_id,
         }
       }, function(err, response, body) {
         res.json(JSON.parse(body));
       });
-    })
+    });
   });
 
   form.on('error', next);
