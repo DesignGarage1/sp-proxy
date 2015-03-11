@@ -43,10 +43,10 @@ module.exports = function(req, res, next) {
   batch.push(function(cb) {
     form.on('field', function(name, value) {
       console.log(name + ' ' +  value);
-      if (name == 'code') {
+      if (name === 'code') {
         code = value;
       }
-      else if (name == 'friend_id') {
+      else if (name === 'friend_id') {
         friend_id = value;
       }
       cb(null, value);
