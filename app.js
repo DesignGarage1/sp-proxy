@@ -28,6 +28,7 @@ app.use(function(err, req, res, next) {
 
 // process request
 app.post('/upload', routers.upload);
+app.post('/admin/upload', routers.admin);
 app.get('/images/:id/:type/:timestamp.jpg', routers.image);
 app.get('/proxy', routers.proxy);
 
