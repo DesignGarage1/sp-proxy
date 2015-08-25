@@ -12,7 +12,7 @@ var uploadToS3 = function(fileStream, next) {
       });
   var id = uuid.v4();
   var timestamp = Date.now();
-  var s3Key = id + '.jpg';
+  var s3Key = id + '/original/' + timestamp + '.jpg';
   var headers = {
     'Content-Length': fileStream.byteCount,
     'x-amz-acl': 'public-read',
@@ -23,9 +23,8 @@ var uploadToS3 = function(fileStream, next) {
   s3Client.putStream(fileStream, s3Key, headers, function(err, s3Response) {
     if (err) return next(err);
     next(null, {
-      id: id,
-      timestamp: timestamp,
-      url: config.DOMAIN + '/images/' + s3Key
+      s3Key: s3Key,
+      url: s3Response.req.url
     });
   });
 }
