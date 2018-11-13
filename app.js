@@ -32,7 +32,7 @@ app.post('/admin/upload', routers.admin);
 app.get('/images/:id/:type/:timestamp.jpg', routers.image);
 app.get('/proxy', routers.proxy);
 
-app.listen(process.env.PORT || 3000);
+app.listen(config.PORT);
 
 // heroku hack
 var request = require('request');

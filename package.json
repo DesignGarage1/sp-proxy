@@ -9,11 +9,11 @@
   "author": "kiennt",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.354.0",
     "batch": "^0.5.1",
     "express": "^4.9.7",
-    "knox": "^0.9.1",
-    "multiparty": "^3.3.2",
-    "node-uuid": "^1.4.1",
+    "multiparty": "^4.2.1",
+    "node-uuid": "^1.4.8",
     "request": "^2.45.0"
   }
 }

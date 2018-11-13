@@ -1,6 +1,5 @@
 var uuid = require('node-uuid'),
     multiparty = require('multiparty'),
-    knox = require('knox'),
     Batch = require('batch'),
     request = require('request'),
     config = require('../config'),
@@ -13,23 +12,19 @@ module.exports = function(req, res, next) {
       friend_id = '',
       code = '';
 
-  batch.push(function(cb) {
+  batch.push(function(callback) {
     form.on('field', function(name, value) {
       console.log(name + ' ' +  value);
-      if (name === 'code') {
-        code = value;
-      }
-      else if (name === 'friend_id') {
-        friend_id = value;
-      }
-      cb(null, value);
+      if (name === 'code') code = value;
+      else if (name === 'friend_id') friend_id = value;
+      callback(null, value);
     });
   });
 
-  batch.push(function(cb) {
+  batch.push(function(callback) {
     form.on('part', function(part) {
-      if (! part.filename) return;
-      cb(null, part);
+      if (!part.filename) return;
+      callback(null, part);
     });
   });
 
@@ -37,7 +32,7 @@ module.exports = function(req, res, next) {
     if (err) return next(err);
     uploadToS3(results[1], function(err, data) {
       if (err) return next(err);
-      var url = 'http://' + config.SIMPLEPRINT_DOMAIN + '/labs/code/' + code + '/images/';
+      var url = 'http://' + config.SIMPLEPRINTS_DOMAIN + '/labs/code/' + code + '/images/';
       request.post({
         url: url,
         formData: {
