@@ -1,51 +1,30 @@
 var express = require('express');
-var app = express();
-var routers = require('./routers');
-var config = require('./config');
-
-// init proxy
-var proxy = require('./proxy');
-proxy.init();
+var app = express(),
+    routers = require('./routers'),
+    config = require('./config');
 
 // middlewares
 app.all('*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
-app.use(function(req, res, next) {
-  if (config.CURRENT_DOMAIN === undefined) {
-    config.CURRENT_DOMAIN = req.headers.host;
-  }
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, SP-Environment');
   next();
 });
 
 app.use(function(err, req, res, next) {
+  let message = 'Something broke!';
+  console.error(message);
   console.error(err.stack);
-  res.json({ error: 'Something broke!' });
+  res.status(500).json({ error: message });
 });
 
 // process request
 app.post('/upload', routers.upload);
-app.post('/admin/upload', routers.admin);
-app.get('/images/:id/:type/:timestamp.jpg', routers.image);
-app.get('/proxy', routers.proxy);
 
+console.info(`Listening on ${config.PORT}`);
 app.listen(config.PORT);
 
-// heroku hack
-var request = require('request');
-var DELAY_TIME = 10 * 60 * 1000; // 10 minutes
-function request_itself() {
-  if (config.CURRENT_DOMAIN != undefined) {
-    var url = 'http://' + config.CURRENT_DOMAIN;
-    request.get(url);
-  }
-  setTimeout(request_itself, DELAY_TIME);
-}
-
-setTimeout(request_itself, DELAY_TIME);
-process.on('uncaughtException', function(err) {
-  console.log(err);
+// Exception fallback
+process.on('uncaughtException', (error) => {
+  console.error(error);
+  console.error(error.stack);
 });
